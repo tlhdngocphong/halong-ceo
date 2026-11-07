@@ -1,0 +1,336 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>Bảng điều hành CEO Hà Long</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600&family=Lora:wght@400;500&display=swap">
+<style>
+/* Bố cục: một cột, thanh chỉ số trên cùng, các thẻ xếp lưới tự co giãn. Màu: xanh lá nông nghiệp đậm làm điểm nhấn, nền trung tính ngả xanh. */
+:root {
+  --bg: #f5f7f4; --panel: #ffffff; --fg: #18211b; --muted: #5d6a61; --line: #dfe5df;
+  --accent: #2f6b45; --accent-soft: #cfe3d4; --bar: #b9c6bd; --bad: #b3261e; --ok: #1f7a3f;
+  --font-body: "Be Vietnam Pro", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-display: "Lora", Georgia, "Times New Roman", serif;
+  --radius: 10px; color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #111612; --panel: #182019; --fg: #e6ece7; --muted: #9aa89e; --line: #2a352d;
+    --accent: #7cc193; --accent-soft: #24412e; --bar: #3d4b41; --bad: #f2867d; --ok: #7cc193; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #111612; --panel: #182019; --fg: #e6ece7; --muted: #9aa89e; --line: #2a352d;
+  --accent: #7cc193; --accent-soft: #24412e; --bar: #3d4b41; --bad: #f2867d; --ok: #7cc193; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html, body { margin: 0; }
+body { background: var(--bg); color: var(--fg); font: 15px/1.5 var(--font-body); font-variant-numeric: tabular-nums; }
+.wrap { max-width: 1200px; margin: 0 auto; padding-block: max(24px, env(safe-area-inset-top, 0px)) max(32px, env(safe-area-inset-bottom, 0px)); padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); display: flex; flex-direction: column; gap: 28px; }
+h1 { font: 400 clamp(1.6rem, 3.4vw, 2.2rem)/1.2 var(--font-display); margin: 0; text-wrap: balance; }
+h2 { font-size: 1.05rem; font-weight: 600; margin: 0; }
+h3 { font-size: .95rem; font-weight: 600; margin: 0; }
+.muted { color: var(--muted); }
+.cap { font-size: .8rem; color: var(--muted); margin: 0; }
+.take { margin: 10px 0 0; max-width: 75ch; color: var(--muted); }
+.take b { color: var(--fg); font-weight: 600; }
+.stamp { display: inline-block; margin-top: 10px; font-size: .78rem; letter-spacing: .02em; color: var(--muted); border: 1px solid var(--line); border-radius: 999px; padding: 2px 10px; }
+.kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 11rem), 1fr)); gap: 12px; }
+.kpi { background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); padding: 14px; display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.kpi .v { font: 400 1.7rem/1.15 var(--font-display); }
+.sec { display: flex; flex-direction: column; gap: 10px; }
+.grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr)); gap: 12px; }
+.card { background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); padding: 18px; display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+.bad { color: var(--bad); } .ok { color: var(--ok); }
+.scroll { max-height: 22rem; overflow: auto; }
+.card { overflow-x: auto; }
+.chart, .card > p { min-width: 0; }
+table { width: 100%; border-collapse: collapse; font-size: .82rem; }
+th { text-align: left; font-weight: 500; color: var(--muted); padding: 6px 8px; border-bottom: 1px solid var(--line); position: sticky; top: 0; background: var(--panel); }
+td { padding: 6px 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
+.num { text-align: right; white-space: nowrap; }
+.barcell { display: flex; align-items: center; justify-content: flex-end; gap: 8px; }
+.bar { display: inline-block; height: 6px; border-radius: 3px; background: var(--bar); flex: 0 0 auto; }
+.bar.crit { background: var(--bad); }
+.chart { position: relative; min-height: 240px; }
+.chart svg { display: block; }
+.chart text { font: 12px var(--font-body); fill: var(--muted); }
+.tip { position: absolute; pointer-events: none; background: var(--panel); border: 1px solid var(--line); border-radius: 8px; box-shadow: 0 6px 20px rgba(0,0,0,.12); padding: 6px 10px; font-size: .8rem; white-space: nowrap; }
+.tip[hidden] { display: none; }
+details { font-size: .82rem; color: var(--muted); }
+details ul { padding-left: 1.2em; max-width: 78ch; }
+/* Màn hình mật khẩu */
+.gate { min-height: 100vh; display: grid; place-items: center; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 24px; }
+.gate form { width: min(100%, 22rem); background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 28px 24px; display: flex; flex-direction: column; gap: 14px; }
+.gate h1 { font-size: 1.5rem; }
+.gate label { font-size: .85rem; color: var(--muted); }
+.gate input[type=password] { width: 100%; font: inherit; padding: 10px 12px; border: 1px solid var(--line); border-radius: 8px; background: var(--bg); color: var(--fg); }
+.gate input:focus-visible, .gate button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.gate button { font: 600 .95rem var(--font-body); padding: 10px 12px; border: 0; border-radius: 8px; background: var(--accent); color: var(--bg); cursor: pointer; }
+.gate button:disabled { opacity: .6; cursor: progress; }
+.gate .err { color: var(--bad); font-size: .85rem; min-height: 1.3em; margin: 0; }
+.lock { font-size: .78rem; color: var(--muted); margin: 0; }
+.out { align-self: flex-start; font: 500 .8rem var(--font-body); background: none; color: var(--muted); border: 1px solid var(--line); border-radius: 999px; padding: 4px 12px; cursor: pointer; }
+</style>
+</head>
+<body>
+<div class="gate" id="gate">
+  <form id="gate-form" autocomplete="off">
+    <h1>Bảng điều hành CEO Hà Long</h1>
+    <p class="lock">Trang nội bộ. Nhập mật khẩu để xem số liệu.</p>
+    <label for="pw">Mật khẩu</label>
+    <input id="pw" type="password" autocomplete="current-password" required autofocus>
+    <button id="go" type="submit">Mở bảng điều hành</button>
+    <p class="err" id="err" role="alert"></p>
+  </form>
+</div>
+
+<main class="wrap" id="app" hidden>
+  <header>
+    <h1>Bảng điều hành CEO Hà Long</h1>
+    <p class="take" id="take"></p>
+    <span class="stamp" id="stamp"></span>
+  </header>
+  <div class="kpis" id="kpis"></div>
+  <section class="sec">
+    <h2>Bán hàng</h2>
+    <div class="grid">
+      <div class="card">
+        <h3>Giá trị đơn bình quân mỗi ngày</h3>
+        <p class="cap">Tỷ đồng/ngày, theo ngày lập đơn. Cột nhạt là tháng đang chạy.</p>
+        <div class="chart" id="chart"></div>
+      </div>
+      <div class="card">
+        <h3>Khách hàng lớn từ khi áp dụng HALO ONE</h3>
+        <p class="cap" id="tap-trung"></p>
+        <div class="scroll"><table><thead><tr><th>Khách hàng</th><th class="num">Số đơn</th><th class="num">Giá trị</th></tr></thead><tbody id="tb-khach"></tbody></table></div>
+      </div>
+    </div>
+  </section>
+  <section class="sec">
+    <h2>Giao hàng và sản xuất</h2>
+    <div class="grid">
+      <div class="card">
+        <h3>Dòng đơn chưa giao theo hạn</h3>
+        <p class="cap">Ảnh chụp hiện tại. SL còn lại theo đơn vị thành phẩm.</p>
+        <table><thead><tr><th>Hạn giao</th><th class="num">Số dòng</th><th class="num">SL còn lại</th></tr></thead><tbody id="tb-giao"></tbody></table>
+      </div>
+      <div class="card">
+        <h3>Lệnh sang chai chưa hoàn thành</h3>
+        <p class="cap">Thiếu NVL là trạng thái chặn sản xuất.</p>
+        <table><thead><tr><th>Trạng thái</th><th class="num">Số lệnh</th><th class="num">SL còn lại</th><th class="num">Quá hạn</th></tr></thead><tbody id="tb-lenh"></tbody></table>
+      </div>
+      <div class="card">
+        <h3>Sản lượng theo tháng</h3>
+        <p class="cap">Pha chế tính theo kg/lít, sang chai theo thành phẩm.</p>
+        <table><thead><tr><th>Tháng</th><th class="num">Pha chế</th><th class="num">Phiếu PC</th><th class="num">Sang chai</th><th class="num">Phiếu SC</th></tr></thead><tbody id="tb-sx"></tbody></table>
+      </div>
+    </div>
+  </section>
+  <section class="sec">
+    <h2>Tiến độ công đoạn, kho và thu mua</h2>
+    <div class="grid">
+      <div class="card">
+        <h3>SLA theo công đoạn</h3>
+        <p class="cap">Số việc trễ hẹn, trong hạn và đang chờ xử lý.</p>
+        <table><thead><tr><th>Công đoạn</th><th class="num">Trễ</th><th class="num">Trong hạn</th><th class="num">Đang chờ</th></tr></thead><tbody id="tb-sla"></tbody></table>
+      </div>
+      <div class="card">
+        <h3>Tồn kho theo nhóm vật tư</h3>
+        <p class="cap">Số mã còn tồn và mã âm, năm hiện hành, tổng các kho.</p>
+        <table><thead><tr><th>Nhóm</th><th class="num">Mã còn tồn</th><th class="num">Mã âm</th></tr></thead><tbody id="tb-kho"></tbody></table>
+      </div>
+      <div class="card">
+        <h3>Nhà cung cấp lớn từ khi áp dụng HALO ONE</h3>
+        <p class="cap">Giá trị đơn đặt hàng NCC.</p>
+        <div class="scroll"><table><thead><tr><th>Nhà cung cấp</th><th class="num">Số đơn</th><th class="num">Giá trị</th></tr></thead><tbody id="tb-ncc"></tbody></table></div>
+      </div>
+    </div>
+  </section>
+  <details>
+    <summary>Ghi chú về số liệu</summary>
+    <ul>
+      <li>Giá trị đơn là giá trị đơn hàng tiếp nhận theo ngày lập đơn. Đây chưa phải doanh thu xuất hóa đơn hay tiền đã thu.</li>
+      <li>HALO ONE áp dụng từ 01/10/2026. Số liệu trước ngày đó không đáng tin nên đã loại bỏ.</li>
+      <li>Dòng đơn chưa giao, lệnh sang chai đang mở và tồn kho là ảnh chụp tại thời điểm cập nhật, có thể còn lẫn dữ liệu nhập trước 01/10/2026. Cần đối soát trước khi kết luận.</li>
+      <li>Chưa có: doanh thu hóa đơn, công nợ, dòng tiền, biên lợi nhuận.</li>
+    </ul>
+  </details>
+  <button class="out" id="out" type="button">Khóa lại</button>
+</main>
+
+<script>
+const ENC = {"v":1,"iter":600000,"salt":"MbzveJOHqdQvLxh5NHhleg==","iv":"qUQQtbuMfIOUSXHz","ct":"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"};
+
+const b64 = (s) => Uint8Array.from(atob(s), (c) => c.charCodeAt(0));
+async function decrypt(password) {
+  const base = await crypto.subtle.importKey('raw', new TextEncoder().encode(password), 'PBKDF2', false, ['deriveKey']);
+  const key = await crypto.subtle.deriveKey({name: 'PBKDF2', hash: 'SHA-256', salt: b64(ENC.salt), iterations: ENC.iter}, base, {name: 'AES-GCM', length: 256}, false, ['decrypt']);
+  const plain = await crypto.subtle.decrypt({name: 'AES-GCM', iv: b64(ENC.iv)}, key, b64(ENC.ct));
+  return JSON.parse(new TextDecoder().decode(plain));
+}
+
+const nf = (o) => new Intl.NumberFormat('vi-VN', o);
+const F = {
+  ty: (v) => nf({maximumFractionDigits: 1}).format(v / 1e9) + ' tỷ',
+  n: (v) => nf({maximumFractionDigits: 0}).format(v),
+  pct: (v) => nf({style: 'percent', maximumFractionDigits: 0}).format(v),
+  dpct: (v) => (v > 0 ? '+' : v < 0 ? '−' : '') + nf({style: 'percent', maximumFractionDigits: 0}).format(Math.abs(v)),
+  d: (v) => String(v).slice(0, 10).split('-').reverse().join('/'),
+};
+const el = (tag, props = {}, ...kids) => { const e = document.createElement(tag); Object.assign(e, props); e.append(...kids); return e; };
+const sum = (a, f) => a.reduce((s, x) => s + f(x), 0);
+const toRows = (rep, cols) => rep.dong.map((d) => Object.fromEntries(cols.map((k, i) => [k, d[i]])));
+
+function compute(D) {
+  const tu = D.ky.tu, den = D.ky.den;
+  const thang = toRows(D.don_hang_thang, ['thang', 'so_don', 'gia_tri', 'so_khach'])
+    .map((x) => { const [m, y] = x.thang.split('/').map(Number); return {...x, m, y, ym: y + '-' + String(m).padStart(2, '0')}; })
+    .filter((o) => o.ym >= tu.slice(0, 7) && o.ym <= den.slice(0, 7))
+    .map((o) => { const so_ngay = o.ym === den.slice(0, 7) ? Number(den.slice(8, 10)) : new Date(Date.UTC(o.y, o.m, 0)).getUTCDate(); return {...o, so_ngay, bq: o.gia_tri / so_ngay, dang_chay: o.ym === den.slice(0, 7)}; });
+  const cur = thang[thang.length - 1], prev = thang.length > 1 ? thang[thang.length - 2] : null;
+  const giao = toRows(D.don_chua_giao, ['han_giao', 'so_dong', 'sl_con_lai']);
+  const lenh = toRows(D.lenh_sc_mo, ['trang_thai', 'so_lenh', 'sl_con_lai', 'qua_han']);
+  const kho = toRows(D.ton_kho, ['nhom', 'so_ma_ton', 'so_ma_am']);
+  const khach = toRows(D.khach_hang_top, ['ten', 'so_don', 'gia_tri']).map((r) => ({...r, ten: String(r.ten).replace(/\s*\(CCCD:[^)]*\)/i, '')}));
+  const ncc = toRows(D.thu_mua_ncc, ['ten', 'so_don', 'gia_tri']);
+  const sx = toRows(D.sx_thang, ['thang', 'sl_pha_che', 'phieu_pc', 'sl_sang_chai', 'phieu_sc']).filter((r) => { const [m, y] = r.thang.split('/'); return y + '-' + m >= tu.slice(0, 7); });
+  const giaoTong = sum(giao, (x) => x.so_dong), giaoQH = sum(giao.filter((x) => x.han_giao === 'Quá hạn'), (x) => x.so_dong);
+  const lenhTong = sum(lenh, (x) => x.so_lenh), lenhThieu = sum(lenh.filter((x) => x.trang_thai === 'THIEU_NVL'), (x) => x.so_lenh);
+  const khTong = sum(khach, (x) => x.gia_tri), named = khach.filter((x) => !x.ten.startsWith('Khác')).sort((a, b) => b.gia_tri - a.gia_tri);
+  return {
+    tu, den, at: D.ky.at, thang, cur, prev, giao, lenh, kho, khach, ncc, sx, sla: D.sla,
+    run: prev && prev.bq ? cur.bq / prev.bq - 1 : null,
+    giaoTong, giaoQH, lenhTong, lenhThieu, lenhQH: sum(lenh, (x) => x.qua_han),
+    maTon: sum(kho, (x) => x.so_ma_ton), maAm: sum(kho, (x) => x.so_ma_am),
+    top5: khTong ? sum(named.slice(0, 5), (x) => x.gia_tri) / khTong : null,
+    top20: khTong ? sum(named.slice(0, 20), (x) => x.gia_tri) / khTong : null,
+  };
+}
+
+function table(tbodyId, rows, cols, opt = {}) {
+  const tb = document.getElementById(tbodyId);
+  tb.replaceChildren();
+  const base = opt.skip ? rows.filter((r) => !opt.skip(r)) : rows;
+  const max = {};
+  cols.forEach((c) => { if (c.bar) max[c.f] = Math.max(1, ...base.map((r) => r[c.f] || 0)); });
+  rows.forEach((r) => {
+    const tr = tb.insertRow();
+    cols.forEach((c) => {
+      const td = tr.insertCell();
+      const txt = c.label ? c.label(r[c.f]) : c.fmt ? F[c.fmt](r[c.f]) : String(r[c.f] ?? '');
+      if (c.fmt) td.className = 'num';
+      if (c.bar) {
+        const b = el('span', {className: 'bar' + (c.crit && c.crit(r) ? ' crit' : '')});
+        b.style.width = Math.max(2, Math.min(64, (64 * (r[c.f] || 0)) / max[c.f])) + 'px';
+        td.append(el('div', {className: 'barcell'}, b, el('span', {textContent: txt})));
+      } else td.textContent = txt;
+    });
+  });
+}
+
+function chart(rows) {
+  const box = document.getElementById('chart');
+  box.replaceChildren();
+  const W = Math.max(280, box.clientWidth), H = 240, mb = 26, mt = 10, NS = 'http://www.w3.org/2000/svg';
+  const svg = document.createElementNS(NS, 'svg');
+  svg.setAttribute('viewBox', `0 0 ${W} ${H}`); svg.setAttribute('width', '100%'); svg.setAttribute('role', 'img');
+  svg.setAttribute('aria-label', 'Giá trị đơn bình quân mỗi ngày theo tháng');
+  box.append(svg);
+  const mk = (t, a) => { const e = document.createElementNS(NS, t); for (const k in a) e.setAttribute(k, a[k]); svg.append(e); return e; };
+  const maxV = Math.max(...rows.map((r) => r.bq)) || 1;
+  const step = [0.5, 1, 2, 5, 10].map((s) => s * 1e9).find((s) => maxV / s <= 5) || 1e10;
+  const top = Math.ceil(maxV / step) * step;
+  const y = (v) => H - mb - ((H - mb - mt) * v) / top;
+  const fmtT = (v) => nf({maximumFractionDigits: 1}).format(v / 1e9);
+  const ticks = []; for (let v = 0; v <= top + 1; v += step) ticks.push(v);
+  let ml = 0;
+  ticks.forEach((t) => { const tx = mk('text', {x: 0, y: 0}); tx.textContent = fmtT(t); ml = Math.max(ml, tx.getComputedTextLength()); tx.remove(); });
+  ml += 10;
+  ticks.forEach((t) => {
+    mk('line', {x1: ml, x2: W - 4, y1: y(t), y2: y(t), stroke: 'currentColor', 'stroke-opacity': 0.12});
+    const tx = mk('text', {x: ml - 6, y: y(t), dy: '0.32em', 'text-anchor': 'end'}); tx.textContent = fmtT(t);
+  });
+  const band = (W - 4 - ml) / rows.length, bw = Math.min(40, band * 0.6);
+  const tip = el('div', {className: 'tip', hidden: true}); box.append(tip);
+  const cs = getComputedStyle(document.documentElement);
+  rows.forEach((r, i) => {
+    const x = ml + band * i + (band - bw) / 2;
+    const rect = mk('rect', {x, width: bw, y: y(r.bq), height: Math.max(0, y(0) - y(r.bq)), rx: 4});
+    rect.style.fill = r.dang_chay ? cs.getPropertyValue('--bar') : cs.getPropertyValue('--accent');
+    const lb = mk('text', {x: x + bw / 2, y: H - 8, 'text-anchor': 'middle'}); lb.textContent = 'T' + r.m + '/' + String(r.y).slice(2);
+    const vl = mk('text', {x: x + bw / 2, y: y(r.bq) - 6, 'text-anchor': 'middle'}); vl.textContent = fmtT(r.bq); vl.style.fill = cs.getPropertyValue('--fg');
+    const show = (ev) => {
+      tip.replaceChildren(el('div', {className: 'muted', textContent: 'Tháng ' + r.thang + (r.dang_chay ? ` (đang chạy, ${r.so_ngay} ngày)` : '')}), el('div', {textContent: `${F.ty(r.bq)}/ngày · tổng ${F.ty(r.gia_tri)} · ${F.n(r.so_don)} đơn`}));
+      tip.hidden = false;
+      const bx = box.getBoundingClientRect(), tw = tip.offsetWidth;
+      const px = (ev.clientX ?? bx.left + x) - bx.left;
+      tip.style.left = Math.min(Math.max(0, px - tw / 2), box.clientWidth - tw) + 'px';
+      tip.style.top = Math.max(0, (y(r.bq) / H) * box.clientHeight - 56) + 'px';
+    };
+    rect.addEventListener('pointerenter', show); rect.addEventListener('pointermove', show);
+    rect.addEventListener('pointerleave', () => { tip.hidden = true; });
+  });
+  mk('line', {x1: ml, x2: W - 4, y1: y(0), y2: y(0), stroke: 'currentColor', 'stroke-opacity': 0.35});
+}
+
+const STATUS = {THIEU_NVL: 'Thiếu NVL', SAN_SANG_VAT_TU: 'Sẵn sàng vật tư', DA_DU_NVL: 'Đã đủ NVL'};
+const STAGE = {IQC: 'Kiểm NVL đầu vào (IQC)', OQC: 'Kiểm thành phẩm (OQC)', KIEM_VAT_TU: 'Kiểm vật tư đóng gói', QUYET_TOAN: 'Quyết toán lệnh'};
+
+function render(D) {
+  const C = compute(D);
+  const b = (t, cls) => el('b', {textContent: t, className: cls || ''});
+  const tone = (v) => (v > 0 ? 'ok' : v < 0 ? 'bad' : '');
+  document.getElementById('take').replaceChildren(
+    'Số liệu từ ', b(F.d(C.tu)), ', khi HALO ONE bắt đầu áp dụng, đến ', b(F.d(C.den)), '. ',
+    ...(C.prev ? ['Tháng ', b(C.prev.thang), ' tiếp nhận ', b(F.ty(C.prev.gia_tri)), ' đơn hàng. '] : []),
+    'Tháng này đạt ', b(F.ty(C.cur.bq)), ' mỗi ngày',
+    ...(C.run != null ? [', ', b(F.dpct(C.run), tone(C.run)), ' so với bình quân ngày tháng trước'] : []),
+    '. Điểm nghẽn ở khâu cung ứng: ', b(F.pct(C.lenhThieu / C.lenhTong)), ' lệnh sang chai đang mở bị thiếu NVL, ',
+    b(F.pct(C.giaoQH / C.giaoTong)), ' dòng đơn chưa giao đã quá hạn hẹn.');
+  document.getElementById('stamp').textContent = 'Cập nhật từ HALO ONE lúc ' + C.at;
+  const kpi = (label, val, sub, cls) => el('div', {className: 'kpi'}, el('span', {className: 'cap', textContent: label}), el('span', {className: 'v ' + (cls || ''), textContent: val}), el('span', {className: 'cap'}, ...sub));
+  document.getElementById('kpis').replaceChildren(
+    ...(C.prev ? [kpi('Đơn tiếp nhận tháng ' + C.prev.thang, F.ty(C.prev.gia_tri), [F.n(C.prev.so_don) + ' đơn · ' + F.n(C.prev.so_khach) + ' khách'])] : []),
+    kpi(`Tháng ${C.cur.thang}, sau ${C.cur.so_ngay} ngày`, F.ty(C.cur.gia_tri), [F.n(C.cur.so_don) + ' đơn, chưa trọn tháng']),
+    kpi('Bình quân mỗi ngày, tháng này', F.ty(C.cur.bq), C.run != null ? [el('span', {className: tone(C.run), textContent: F.dpct(C.run)}), ' so với ' + F.ty(C.prev.bq) + '/ngày tháng trước'] : ['']),
+    kpi('Dòng đơn quá hạn giao', F.pct(C.giaoQH / C.giaoTong), [F.n(C.giaoQH) + ' trên ' + F.n(C.giaoTong) + ' dòng chưa giao'], C.giaoQH / C.giaoTong > 0.2 ? 'bad' : ''),
+    kpi('Lệnh sang chai thiếu NVL', F.n(C.lenhThieu), ['trên ' + F.n(C.lenhTong) + ' lệnh mở · ' + F.n(C.lenhQH) + ' lệnh quá hạn'], C.lenhThieu > 0 ? 'bad' : ''),
+    kpi('Mã tồn kho âm', F.n(C.maAm), ['trên ' + F.n(C.maTon) + ' mã còn tồn'], C.maAm > 0 ? 'bad' : ''));
+  document.getElementById('tap-trung').textContent = `Top 5 chiếm ${F.pct(C.top5)}, top 20 chiếm ${F.pct(C.top20)} giá trị đơn.`;
+  table('tb-khach', C.khach, [{f: 'ten'}, {f: 'so_don', fmt: 'n'}, {f: 'gia_tri', fmt: 'ty', bar: true}], {skip: (r) => r.ten.startsWith('Khác')});
+  table('tb-ncc', C.ncc, [{f: 'ten'}, {f: 'so_don', fmt: 'n'}, {f: 'gia_tri', fmt: 'ty', bar: true}], {skip: (r) => r.ten.startsWith('Khác')});
+  table('tb-giao', C.giao, [{f: 'han_giao'}, {f: 'so_dong', fmt: 'n', bar: true, crit: (r) => r.han_giao === 'Quá hạn'}, {f: 'sl_con_lai', fmt: 'n'}]);
+  table('tb-lenh', C.lenh, [{f: 'trang_thai', label: (v) => STATUS[v] || v}, {f: 'so_lenh', fmt: 'n', bar: true, crit: (r) => r.trang_thai === 'THIEU_NVL'}, {f: 'sl_con_lai', fmt: 'n'}, {f: 'qua_han', fmt: 'n'}]);
+  table('tb-sx', C.sx, [{f: 'thang'}, {f: 'sl_pha_che', fmt: 'n'}, {f: 'phieu_pc', fmt: 'n'}, {f: 'sl_sang_chai', fmt: 'n'}, {f: 'phieu_sc', fmt: 'n'}]);
+  table('tb-sla', C.sla, [{f: 'cong_doan', label: (v) => STAGE[v] || v}, {f: 'tre', fmt: 'n'}, {f: 'trong_han', fmt: 'n'}, {f: 'dang_cho', fmt: 'n'}]);
+  table('tb-kho', C.kho, [{f: 'nhom'}, {f: 'so_ma_ton', fmt: 'n'}, {f: 'so_ma_am', fmt: 'n'}]);
+  chart(C.thang);
+  let t; window.addEventListener('resize', () => { clearTimeout(t); t = setTimeout(() => chart(C.thang), 150); });
+}
+
+const KEY = 'hl-dash-pw';
+async function unlock(pw, quiet) {
+  const err = document.getElementById('err'), go = document.getElementById('go');
+  go.disabled = true; err.textContent = '';
+  try {
+    const D = await decrypt(pw);
+    try { sessionStorage.setItem(KEY, pw); } catch (e) {}
+    document.getElementById('gate').hidden = true;
+    document.getElementById('app').hidden = false;
+    render(D);
+  } catch (e) {
+    if (!quiet) err.textContent = 'Mật khẩu không đúng. Kiểm tra lại chữ hoa, chữ thường.';
+    try { sessionStorage.removeItem(KEY); } catch (e2) {}
+  } finally { go.disabled = false; }
+}
+document.getElementById('gate-form').addEventListener('submit', (e) => { e.preventDefault(); unlock(document.getElementById('pw').value); });
+document.getElementById('out').addEventListener('click', () => { try { sessionStorage.removeItem(KEY); } catch (e) {} location.reload(); });
+try { const saved = sessionStorage.getItem(KEY); if (saved) unlock(saved, true); } catch (e) {}
+</script>
+</body>
+</html>
