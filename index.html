@@ -8,10 +8,12 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600&family=Lora:wght@400;500&display=swap">
 <style>
-/* Bố cục: một cột, thanh chỉ số trên cùng, các thẻ xếp lưới tự co giãn. Màu: xanh lá nông nghiệp đậm làm điểm nhấn, nền trung tính ngả xanh. */
+/* Bố cục: một cột đọc từ trên xuống theo thứ tự ra quyết định — tóm tắt, việc cần quyết, sản xuất, cung ứng, bán hàng, giao hàng, kho.
+   Màu: xanh lá đậm làm điểm nhấn, xanh mòng két cho "nhận vào", đỏ chỉ dùng cho điểm nghẽn. */
 :root {
   --bg: #f5f7f4; --panel: #ffffff; --fg: #18211b; --muted: #5d6a61; --line: #dfe5df;
-  --accent: #2f6b45; --accent-soft: #cfe3d4; --bar: #b9c6bd; --bad: #b3261e; --ok: #1f7a3f;
+  --accent: #2f6b45; --nhan: #2a8f8a; --dong: #24352b; --bar: #b9c6bd; --bad: #b3261e; --warn: #9a6200; --ok: #1f7a3f;
+  --bad-soft: #fbeceb; --warn-soft: #fbf3e2;
   --font-body: "Be Vietnam Pro", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   --font-display: "Lora", Georgia, "Times New Roman", serif;
   --radius: 10px; color-scheme: light;
@@ -19,12 +21,14 @@
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
     --bg: #111612; --panel: #182019; --fg: #e6ece7; --muted: #9aa89e; --line: #2a352d;
-    --accent: #7cc193; --accent-soft: #24412e; --bar: #3d4b41; --bad: #f2867d; --ok: #7cc193; color-scheme: dark;
+    --accent: #7cc193; --nhan: #5cc4bd; --dong: #d6e2d9; --bar: #3d4b41; --bad: #f2867d; --warn: #e3b25a; --ok: #7cc193;
+    --bad-soft: #3a1f1d; --warn-soft: #362a12; color-scheme: dark;
   }
 }
 :root[data-theme="dark"] {
   --bg: #111612; --panel: #182019; --fg: #e6ece7; --muted: #9aa89e; --line: #2a352d;
-  --accent: #7cc193; --accent-soft: #24412e; --bar: #3d4b41; --bad: #f2867d; --ok: #7cc193; color-scheme: dark;
+  --accent: #7cc193; --nhan: #5cc4bd; --dong: #d6e2d9; --bar: #3d4b41; --bad: #f2867d; --warn: #e3b25a; --ok: #7cc193;
+  --bad-soft: #3a1f1d; --warn-soft: #362a12; color-scheme: dark;
 }
 * { box-sizing: border-box; }
 [hidden] { display: none !important; }
@@ -32,44 +36,54 @@ html, body { margin: 0; }
 body { background: var(--bg); color: var(--fg); font: 15px/1.5 var(--font-body); font-variant-numeric: tabular-nums; }
 .wrap { max-width: 1200px; margin: 0 auto; padding-block: max(24px, env(safe-area-inset-top, 0px)) max(32px, env(safe-area-inset-bottom, 0px)); padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); display: flex; flex-direction: column; gap: 28px; }
 h1 { font: 400 clamp(1.6rem, 3.4vw, 2.2rem)/1.2 var(--font-display); margin: 0; text-wrap: balance; }
-h2 { font-size: 1.05rem; font-weight: 600; margin: 0; }
+h2 { font-size: 1.05rem; font-weight: 600; margin: 0; display: flex; align-items: baseline; gap: 10px; }
+h2 .no { font: 500 .78rem var(--font-body); color: var(--muted); letter-spacing: .06em; }
 h3 { font-size: .95rem; font-weight: 600; margin: 0; }
 .muted { color: var(--muted); }
 .cap { font-size: .8rem; color: var(--muted); margin: 0; }
-.take { margin: 10px 0 0; max-width: 75ch; color: var(--muted); }
-.take b { color: var(--fg); font-weight: 600; }
 .stamp { display: inline-block; margin-top: 10px; font-size: .78rem; letter-spacing: .02em; color: var(--muted); border: 1px solid var(--line); border-radius: 999px; padding: 2px 10px; }
+.brief { margin: 14px 0 0; padding: 0 0 0 1.2em; display: flex; flex-direction: column; gap: 6px; max-width: 80ch; color: var(--muted); }
+.brief b { color: var(--fg); font-weight: 600; }
 .kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 11rem), 1fr)); gap: 12px; }
 .kpi { background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); padding: 14px; display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.kpi.alert { border-color: color-mix(in srgb, var(--bad) 45%, var(--line)); }
 .kpi .v { font: 400 1.7rem/1.15 var(--font-display); }
 .sec { display: flex; flex-direction: column; gap: 10px; }
 .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr)); gap: 12px; }
-.card { background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); padding: 18px; display: flex; flex-direction: column; gap: 8px; min-width: 0; }
-.bad { color: var(--bad); } .ok { color: var(--ok); }
+.card { background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); padding: 18px; display: flex; flex-direction: column; gap: 8px; min-width: 0; overflow-x: auto; }
+.card.wide { grid-column: 1 / -1; }
+.bad { color: var(--bad); } .ok { color: var(--ok); } .warn { color: var(--warn); }
 .scroll { max-height: 22rem; overflow: auto; }
-.card { overflow-x: auto; }
-.chart, .card > p { min-width: 0; }
 table { width: 100%; border-collapse: collapse; font-size: .82rem; }
 th { text-align: left; font-weight: 500; color: var(--muted); padding: 6px 8px; border-bottom: 1px solid var(--line); position: sticky; top: 0; background: var(--panel); }
 td { padding: 6px 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
+tr.tot td { font-weight: 600; border-bottom: 0; }
 .num { text-align: right; white-space: nowrap; }
 .barcell { display: flex; align-items: center; justify-content: flex-end; gap: 8px; }
 .bar { display: inline-block; height: 6px; border-radius: 3px; background: var(--bar); flex: 0 0 auto; }
-.bar.crit { background: var(--bad); }
+.bar.crit { background: var(--bad); } .bar.amb { background: var(--warn); }
 .chart { position: relative; min-height: 240px; }
 .chart svg { display: block; }
 .chart text { font: 12px var(--font-body); fill: var(--muted); }
-.tip { position: absolute; pointer-events: none; background: var(--panel); border: 1px solid var(--line); border-radius: 8px; box-shadow: 0 6px 20px rgba(0,0,0,.12); padding: 6px 10px; font-size: .8rem; white-space: nowrap; }
-.tip[hidden] { display: none; }
+.legend { display: flex; flex-wrap: wrap; gap: 14px; font-size: .78rem; color: var(--muted); }
+.legend i { display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-right: 6px; vertical-align: -1px; }
+.tip { position: absolute; pointer-events: none; background: var(--panel); border: 1px solid var(--line); border-radius: 8px; box-shadow: 0 6px 20px rgba(0,0,0,.12); padding: 6px 10px; font-size: .8rem; white-space: nowrap; z-index: 2; }
+.call { border-radius: 8px; padding: 10px 12px; font-size: .84rem; background: var(--warn-soft); }
+.call.red { background: var(--bad-soft); }
+.decs { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 20rem), 1fr)); gap: 12px; }
+.dec { background: var(--panel); border: 1px solid var(--line); border-left: 4px solid var(--accent); border-radius: var(--radius); padding: 14px 16px; display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.dec b { font-size: .95rem; }
+.dec p { margin: 0; font-size: .86rem; }
+.dec .meta { font-size: .78rem; color: var(--muted); }
+.kv td:first-child { color: var(--muted); }
 details { font-size: .82rem; color: var(--muted); }
-details ul { padding-left: 1.2em; max-width: 78ch; }
-/* Màn hình mật khẩu */
+details ul { padding-left: 1.2em; max-width: 80ch; }
 .gate { min-height: 100vh; display: grid; place-items: center; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 24px; }
 .gate form { width: min(100%, 22rem); background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 28px 24px; display: flex; flex-direction: column; gap: 14px; }
 .gate h1 { font-size: 1.5rem; }
 .gate label { font-size: .85rem; color: var(--muted); }
 .gate input[type=password] { width: 100%; font: inherit; padding: 10px 12px; border: 1px solid var(--line); border-radius: 8px; background: var(--bg); color: var(--fg); }
-.gate input:focus-visible, .gate button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.gate input:focus-visible, .gate button:focus-visible, .out:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 .gate button { font: 600 .95rem var(--font-body); padding: 10px 12px; border: 0; border-radius: 8px; background: var(--accent); color: var(--bg); cursor: pointer; }
 .gate button:disabled { opacity: .6; cursor: progress; }
 .gate .err { color: var(--bad); font-size: .85rem; min-height: 1.3em; margin: 0; }
@@ -90,59 +104,60 @@ details ul { padding-left: 1.2em; max-width: 78ch; }
 </div>
 
 <main class="wrap" id="app" hidden>
-  <header>
+  <header id="tom-tat">
     <h1>Bảng điều hành CEO Hà Long</h1>
-    <p class="take" id="take"></p>
     <span class="stamp" id="stamp"></span>
+    <ol class="brief" id="brief"></ol>
   </header>
   <div class="kpis" id="kpis"></div>
-  <section class="sec">
-    <h2>Bán hàng</h2>
-    <div class="grid">
-      <div class="card">
-        <h3>Giá trị đơn bình quân mỗi ngày</h3>
-        <p class="cap">Tỷ đồng/ngày, theo ngày lập đơn. Cột nhạt là tháng đang chạy.</p>
-        <div class="chart" id="chart"></div>
-      </div>
-      <div class="card">
-        <h3>Khách hàng lớn từ khi áp dụng HALO ONE</h3>
-        <p class="cap" id="tap-trung"></p>
-        <div class="scroll"><table><thead><tr><th>Khách hàng</th><th class="num">Số đơn</th><th class="num">Giá trị</th></tr></thead><tbody id="tb-khach"></tbody></table></div>
-      </div>
-    </div>
+
+  <section class="sec" id="quyet-dinh">
+    <h2><span class="no">01</span>Việc cần quyết định</h2>
+    <p class="cap">Đề xuất tự động theo quy tắc từ số liệu. Ban Giám đốc duyệt, chỉ định người phụ trách và hạn.</p>
+    <div class="decs" id="decs"></div>
   </section>
-  <section class="sec">
-    <h2>Giao hàng và sản xuất</h2>
+
+  <section class="sec" id="san-xuat">
+    <h2><span class="no">02</span>Sản xuất và tồn đọng</h2>
     <div class="grid">
-      <div class="card">
-        <h3>Dòng đơn chưa giao theo hạn</h3>
-        <p class="cap">Ảnh chụp hiện tại. SL còn lại theo đơn vị thành phẩm.</p>
-        <table><thead><tr><th>Hạn giao</th><th class="num">Số dòng</th><th class="num">SL còn lại</th></tr></thead><tbody id="tb-giao"></tbody></table>
+      <div class="card wide">
+        <h3>Nhận vào và đóng thùng, 7 ngày</h3>
+        <p class="cap">Đơn vị: thùng. Nhận vào = dòng đơn quy đổi theo quy cách N/T. Đóng thùng = phiếu nhập sang chai.</p>
+        <div class="legend"><span><i style="background:var(--nhan)"></i>Nhận vào</span><span><i style="background:var(--dong)"></i>Đóng thùng</span><span><i style="background:var(--bad)"></i>Ngày đóng thùng dưới 35% nhận vào</span></div>
+        <div class="chart" id="chart-nd"></div>
+        <p class="cap" id="nd-note"></p>
       </div>
       <div class="card">
-        <h3>Lệnh sang chai chưa hoàn thành</h3>
-        <p class="cap">Thiếu NVL là trạng thái chặn sản xuất.</p>
-        <table><thead><tr><th>Trạng thái</th><th class="num">Số lệnh</th><th class="num">SL còn lại</th><th class="num">Quá hạn</th></tr></thead><tbody id="tb-lenh"></tbody></table>
+        <h3>Tồn đọng chờ sản xuất</h3>
+        <p class="cap">Quy đổi từng lệnh sang thùng. Ngày SX = thùng chia sản lượng đóng thùng bình quân.</p>
+        <table><thead><tr><th>Trạng thái lệnh</th><th class="num">Lệnh</th><th class="num">Thùng</th><th class="num">Ngày SX</th></tr></thead><tbody id="tb-ton"></tbody></table>
+        <div class="call" id="ton-call"></div>
+      </div>
+      <div class="card">
+        <h3>Tồn đọng theo sản phẩm gốc, top 10</h3>
+        <p class="cap">Sản phẩm gốc gộp các quy cách và nhãn khách của cùng một sản phẩm.</p>
+        <table><thead><tr><th>Sản phẩm gốc</th><th class="num">Lệnh</th><th class="num">Thùng</th><th class="num">% thiếu NVL</th></tr></thead><tbody id="tb-goc"></tbody></table>
       </div>
       <div class="card">
         <h3>Sản lượng theo tháng</h3>
         <p class="cap">Pha chế tính theo kg/lít, sang chai theo thành phẩm.</p>
         <table><thead><tr><th>Tháng</th><th class="num">Pha chế</th><th class="num">Phiếu PC</th><th class="num">Sang chai</th><th class="num">Phiếu SC</th></tr></thead><tbody id="tb-sx"></tbody></table>
       </div>
-    </div>
-  </section>
-  <section class="sec">
-    <h2>Tiến độ công đoạn, kho và thu mua</h2>
-    <div class="grid">
       <div class="card">
         <h3>SLA theo công đoạn</h3>
         <p class="cap">Số việc trễ hẹn, trong hạn và đang chờ xử lý.</p>
         <table><thead><tr><th>Công đoạn</th><th class="num">Trễ</th><th class="num">Trong hạn</th><th class="num">Đang chờ</th></tr></thead><tbody id="tb-sla"></tbody></table>
       </div>
+    </div>
+  </section>
+
+  <section class="sec" id="cung-ung">
+    <h2><span class="no">03</span>Cung ứng nguyên vật liệu</h2>
+    <div class="grid">
       <div class="card">
-        <h3>Tồn kho theo nhóm vật tư</h3>
-        <p class="cap">Số mã còn tồn và mã âm, năm hiện hành, tổng các kho.</p>
-        <table><thead><tr><th>Nhóm</th><th class="num">Mã còn tồn</th><th class="num">Mã âm</th></tr></thead><tbody id="tb-kho"></tbody></table>
+        <h3>Nguyên vật liệu và hàng mua</h3>
+        <p class="cap">Đối chiếu nhu cầu NVL của mọi lệnh đang mở với tồn kho và hàng đang mua.</p>
+        <table class="kv"><tbody id="tb-nvl"></tbody></table>
       </div>
       <div class="card">
         <h3>Nhà cung cấp lớn từ khi áp dụng HALO ONE</h3>
@@ -151,20 +166,67 @@ details ul { padding-left: 1.2em; max-width: 78ch; }
       </div>
     </div>
   </section>
-  <details>
-    <summary>Ghi chú về số liệu</summary>
+
+  <section class="sec" id="ban-hang">
+    <h2><span class="no">04</span>Bán hàng</h2>
+    <div class="grid">
+      <div class="card">
+        <h3>Giá trị đơn bình quân mỗi ngày</h3>
+        <p class="cap">Tỷ đồng/ngày, theo ngày lập đơn. Cột nhạt là tháng đang chạy.</p>
+        <div class="chart" id="chart"></div>
+      </div>
+      <div class="card">
+        <h3>Trong ngày: khách và sản phẩm tiếp nhận</h3>
+        <p class="cap" id="hn-cap"></p>
+        <table><thead><tr><th>Top khách</th><th class="num">Đơn</th><th class="num">Giá trị</th></tr></thead><tbody id="tb-khhn"></tbody></table>
+        <table><thead><tr><th>Top sản phẩm gốc</th><th class="num">Thùng</th></tr></thead><tbody id="tb-sphn"></tbody></table>
+      </div>
+      <div class="card">
+        <h3>Khách hàng lớn từ khi áp dụng HALO ONE</h3>
+        <p class="cap" id="tap-trung"></p>
+        <div class="scroll"><table><thead><tr><th>Khách hàng</th><th class="num">Số đơn</th><th class="num">Giá trị</th></tr></thead><tbody id="tb-khach"></tbody></table></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec" id="giao-hang">
+    <h2><span class="no">05</span>Giao hàng và hứa hạn</h2>
+    <div class="grid">
+      <div class="card">
+        <h3>Dòng đơn chưa giao theo hạn</h3>
+        <p class="cap">Ảnh chụp tại giờ chốt. SL còn lại theo đơn vị thành phẩm.</p>
+        <table><thead><tr><th>Hạn giao</th><th class="num">Số dòng</th><th class="num">SL còn lại</th></tr></thead><tbody id="tb-giao"></tbody></table>
+      </div>
+      <div class="card">
+        <h3>Quy tắc hứa hạn cho đơn mới</h3>
+        <p class="cap">Tính từ lượng hàng đã có vật tư đang chờ chạy. Ngày giao của Hà Long là ngày thành phẩm sẵn tại cửa kho.</p>
+        <table class="kv"><tbody id="tb-hua"></tbody></table>
+      </div>
+      <div class="card">
+        <h3>Tồn kho theo nhóm vật tư</h3>
+        <p class="cap">Số mã còn tồn và mã âm, năm hiện hành, tổng các kho.</p>
+        <table><thead><tr><th>Nhóm</th><th class="num">Mã còn tồn</th><th class="num">Mã âm</th></tr></thead><tbody id="tb-kho"></tbody></table>
+      </div>
+    </div>
+  </section>
+
+  <details id="ghi-chu">
+    <summary>Nguồn, cách tính và giới hạn</summary>
     <ul>
-      <li>Giá trị đơn là giá trị đơn hàng tiếp nhận theo ngày lập đơn. Đây chưa phải doanh thu xuất hóa đơn hay tiền đã thu.</li>
-      <li>HALO ONE áp dụng từ 01/10/2026. Số liệu trước ngày đó không đáng tin nên đã loại bỏ.</li>
-      <li>Dòng đơn chưa giao, lệnh sang chai đang mở và tồn kho là ảnh chụp tại thời điểm cập nhật, có thể còn lẫn dữ liệu nhập trước 01/10/2026. Cần đối soát trước khi kết luận.</li>
-      <li>Chưa có: doanh thu hóa đơn, công nợ, dòng tiền, biên lợi nhuận.</li>
+      <li>Nguồn: HALO ONE, chỉ đọc. Lệnh sang chai đang mở, phiếu nhập sang chai, dòng đơn hạn giao, kiểm tồn NVL, hàng mua chưa về, báo cáo nhanh SX-02, SX-03, BH-01, BH-02, BH-03, KHO-01, TM-01.</li>
+      <li>Nhận vào = số lượng dòng đơn chia quy cách N/T trong tên sản phẩm. Đóng thùng = cột thùng của phiếu sang chai. Tồn đọng = số lượng còn lại từng lệnh chia N/T của lệnh.</li>
+      <li>Bình quân ngày chỉ tính ngày có phiếu đóng thùng, không tính ngày đang chạy. Chưa có công suất thiết kế, giờ máy và cơ cấu ca nên chưa kết luận vượt công suất.</li>
+      <li>Giá trị đơn là giá trị tiếp nhận theo ngày lập đơn, chưa rõ VAT, chưa phải doanh số xuất hóa đơn hay tiền đã thu.</li>
+      <li>HALO ONE áp dụng từ 01/10/2026; số trước đó đã loại bỏ. Lệnh, dòng đơn và tồn kho có thể còn lẫn dữ liệu cũ chưa đóng, cần đối soát.</li>
+      <li>"Thiếu NVL chưa đặt" là ước tính: số dòng thiếu trừ số dòng hàng mua chưa về.</li>
+      <li>Phần "Việc cần quyết định" là đề xuất tự động, cần Ban Giám đốc duyệt.</li>
     </ul>
   </details>
   <button class="out" id="out" type="button">Khóa lại</button>
 </main>
 
 <script>
-const ENC = {"v":1,"iter":600000,"salt":"MbzveJOHqdQvLxh5NHhleg==","iv":"qUQQtbuMfIOUSXHz","ct":"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"};
+const ENC = {"v":1,"iter":600000,"salt":"rNxX2JeNFV7StMFK/ozZmw==","iv":"6g9NBOngVMEfb6lK","ct":"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"};
 
 const b64 = (s) => Uint8Array.from(atob(s), (c) => c.charCodeAt(0));
 async function decrypt(password) {
@@ -176,39 +238,52 @@ async function decrypt(password) {
 
 const nf = (o) => new Intl.NumberFormat('vi-VN', o);
 const F = {
-  ty: (v) => nf({maximumFractionDigits: 1}).format(v / 1e9) + ' tỷ',
+  ty: (v) => nf({maximumFractionDigits: 1}).format(v / 1e9) + ' tỷ đ',
+  ty2: (v) => nf({maximumFractionDigits: 2}).format(v / 1e9) + ' tỷ đ',
+  tr: (v) => nf({maximumFractionDigits: 1}).format(v / 1e6) + ' tr',
   n: (v) => nf({maximumFractionDigits: 0}).format(v),
+  n1: (v) => nf({maximumFractionDigits: 1}).format(v),
   pct: (v) => nf({style: 'percent', maximumFractionDigits: 0}).format(v),
   dpct: (v) => (v > 0 ? '+' : v < 0 ? '−' : '') + nf({style: 'percent', maximumFractionDigits: 0}).format(Math.abs(v)),
   d: (v) => String(v).slice(0, 10).split('-').reverse().join('/'),
+  dm: (v) => String(v).slice(8, 10) + '/' + String(v).slice(5, 7),
 };
+const THU = ['CN', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7'];
+const thu = (iso) => THU[new Date(iso + 'T00:00:00Z').getUTCDay()];
+const addDays = (iso, n) => { const d = new Date(iso + 'T00:00:00Z'); d.setUTCDate(d.getUTCDate() + n); return d.toISOString().slice(0, 10); };
 const el = (tag, props = {}, ...kids) => { const e = document.createElement(tag); Object.assign(e, props); e.append(...kids); return e; };
 const sum = (a, f) => a.reduce((s, x) => s + f(x), 0);
 const toRows = (rep, cols) => rep.dong.map((d) => Object.fromEntries(cols.map((k, i) => [k, d[i]])));
+const STATUS = {THIEU_NVL: 'Thiếu NVL', SAN_SANG_VAT_TU: 'Sẵn sàng vật tư', DA_DU_NVL: 'Đã đủ NVL'};
+const STAGE = {IQC: 'Kiểm NVL đầu vào (IQC)', OQC: 'Kiểm thành phẩm (OQC)', KIEM_VAT_TU: 'Kiểm vật tư đóng gói', QUYET_TOAN: 'Quyết toán lệnh'};
 
 function compute(D) {
-  const tu = D.ky.tu, den = D.ky.den;
+  const tu = D.ky.tu, den = D.ky.den, H = D.dh;
   const thang = toRows(D.don_hang_thang, ['thang', 'so_don', 'gia_tri', 'so_khach'])
     .map((x) => { const [m, y] = x.thang.split('/').map(Number); return {...x, m, y, ym: y + '-' + String(m).padStart(2, '0')}; })
     .filter((o) => o.ym >= tu.slice(0, 7) && o.ym <= den.slice(0, 7))
     .map((o) => { const so_ngay = o.ym === den.slice(0, 7) ? Number(den.slice(8, 10)) : new Date(Date.UTC(o.y, o.m, 0)).getUTCDate(); return {...o, so_ngay, bq: o.gia_tri / so_ngay, dang_chay: o.ym === den.slice(0, 7)}; });
   const cur = thang[thang.length - 1], prev = thang.length > 1 ? thang[thang.length - 2] : null;
   const giao = toRows(D.don_chua_giao, ['han_giao', 'so_dong', 'sl_con_lai']);
-  const lenh = toRows(D.lenh_sc_mo, ['trang_thai', 'so_lenh', 'sl_con_lai', 'qua_han']);
   const kho = toRows(D.ton_kho, ['nhom', 'so_ma_ton', 'so_ma_am']);
   const khach = toRows(D.khach_hang_top, ['ten', 'so_don', 'gia_tri']).map((r) => ({...r, ten: String(r.ten).replace(/\s*\(CCCD:[^)]*\)/i, '')}));
   const ncc = toRows(D.thu_mua_ncc, ['ten', 'so_don', 'gia_tri']);
   const sx = toRows(D.sx_thang, ['thang', 'sl_pha_che', 'phieu_pc', 'sl_sang_chai', 'phieu_sc']).filter((r) => { const [m, y] = r.thang.split('/'); return y + '-' + m >= tu.slice(0, 7); });
   const giaoTong = sum(giao, (x) => x.so_dong), giaoQH = sum(giao.filter((x) => x.han_giao === 'Quá hạn'), (x) => x.so_dong);
-  const lenhTong = sum(lenh, (x) => x.so_lenh), lenhThieu = sum(lenh.filter((x) => x.trang_thai === 'THIEU_NVL'), (x) => x.so_lenh);
   const khTong = sum(khach, (x) => x.gia_tri), named = khach.filter((x) => !x.ten.startsWith('Khác')).sort((a, b) => b.gia_tri - a.gia_tri);
+  const tbD = H.tb_dong || 1, T = H.ton;
+  const ready = T.SAN_SANG_VAT_TU.thung + T.DA_DU_NVL.thung, readyLenh = T.SAN_SANG_VAT_TU.lenh + T.DA_DU_NVL.lenh;
+  const heavy = H.top_goc.filter((x) => x.pthieu >= 0.75).sort((a, b) => b.thung - a.thung).slice(0, 5);
+  const huaNgay = Math.max(5, Math.round(ready / tbD + 0.5));
   return {
-    tu, den, at: D.ky.at, thang, cur, prev, giao, lenh, kho, khach, ncc, sx, sla: D.sla,
+    tu, den, at: D.ky.at, H, thang, cur, prev, giao, kho, khach, ncc, sx, sla: D.sla,
     run: prev && prev.bq ? cur.bq / prev.bq - 1 : null,
-    giaoTong, giaoQH, lenhTong, lenhThieu, lenhQH: sum(lenh, (x) => x.qua_han),
-    maTon: sum(kho, (x) => x.so_ma_ton), maAm: sum(kho, (x) => x.so_ma_am),
+    giaoTong, giaoQH, maTon: sum(kho, (x) => x.so_ma_ton), maAm: sum(kho, (x) => x.so_ma_am),
     top5: khTong ? sum(named.slice(0, 5), (x) => x.gia_tri) / khTong : null,
     top20: khTong ? sum(named.slice(0, 20), (x) => x.gia_tri) / khTong : null,
+    tbD, ready, readyLenh, heavy, heavyThung: sum(heavy, (x) => x.thung), huaNgay,
+    gap: H.tb_nhan - H.tb_dong, tyLeDong: H.tb_nhan ? H.tb_dong / H.tb_nhan : null,
+    thieuChuaDat: H.nvl && H.chua_ve ? H.nvl.soDongThieu - H.chua_ve.soDong : null,
   };
 }
 
@@ -222,111 +297,193 @@ function table(tbodyId, rows, cols, opt = {}) {
     const tr = tb.insertRow();
     cols.forEach((c) => {
       const td = tr.insertCell();
-      const txt = c.label ? c.label(r[c.f]) : c.fmt ? F[c.fmt](r[c.f]) : String(r[c.f] ?? '');
+      const txt = c.label ? c.label(r[c.f], r) : c.fmt ? F[c.fmt](r[c.f]) : String(r[c.f] ?? '');
       if (c.fmt) td.className = 'num';
+      if (c.cls) td.className += ' ' + c.cls(r);
       if (c.bar) {
-        const b = el('span', {className: 'bar' + (c.crit && c.crit(r) ? ' crit' : '')});
+        const b = el('span', {className: 'bar' + (c.crit && c.crit(r) ? ' crit' : c.amb && c.amb(r) ? ' amb' : '')});
         b.style.width = Math.max(2, Math.min(64, (64 * (r[c.f] || 0)) / max[c.f])) + 'px';
         td.append(el('div', {className: 'barcell'}, b, el('span', {textContent: txt})));
       } else td.textContent = txt;
     });
   });
+  if (opt.total) {
+    const tr = tb.insertRow(); tr.className = 'tot';
+    opt.total.forEach((t, i) => { const td = tr.insertCell(); td.textContent = t; if (i > 0) td.className = 'num'; });
+  }
 }
 
-function chart(rows) {
-  const box = document.getElementById('chart');
+const NS = 'http://www.w3.org/2000/svg';
+function svgIn(box, H) {
   box.replaceChildren();
-  const W = Math.max(280, box.clientWidth), H = 240, mb = 26, mt = 10, NS = 'http://www.w3.org/2000/svg';
+  const W = Math.max(280, box.clientWidth);
   const svg = document.createElementNS(NS, 'svg');
   svg.setAttribute('viewBox', `0 0 ${W} ${H}`); svg.setAttribute('width', '100%'); svg.setAttribute('role', 'img');
-  svg.setAttribute('aria-label', 'Giá trị đơn bình quân mỗi ngày theo tháng');
   box.append(svg);
-  const mk = (t, a) => { const e = document.createElementNS(NS, t); for (const k in a) e.setAttribute(k, a[k]); svg.append(e); return e; };
-  const maxV = Math.max(...rows.map((r) => r.bq)) || 1;
-  const step = [0.5, 1, 2, 5, 10].map((s) => s * 1e9).find((s) => maxV / s <= 5) || 1e10;
-  const top = Math.ceil(maxV / step) * step;
+  const mk = (t, a, parent = svg) => { const e = document.createElementNS(NS, t); for (const k in a) e.setAttribute(k, a[k]); parent.append(e); return e; };
+  return {svg, W, mk};
+}
+function niceStep(maxV, target = 5) {
+  const raw = maxV / target, p = Math.pow(10, Math.floor(Math.log10(raw || 1)));
+  return [1, 2, 2.5, 5, 10].map((m) => m * p).find((s) => maxV / s <= target) || 10 * p;
+}
+function yAxis(mk, W, H, mt, mb, maxV, fmt) {
+  const step = niceStep(maxV), top = Math.ceil(maxV / step) * step || step;
   const y = (v) => H - mb - ((H - mb - mt) * v) / top;
-  const fmtT = (v) => nf({maximumFractionDigits: 1}).format(v / 1e9);
-  const ticks = []; for (let v = 0; v <= top + 1; v += step) ticks.push(v);
+  const ticks = []; for (let v = 0; v <= top + step / 2; v += step) ticks.push(v);
   let ml = 0;
-  ticks.forEach((t) => { const tx = mk('text', {x: 0, y: 0}); tx.textContent = fmtT(t); ml = Math.max(ml, tx.getComputedTextLength()); tx.remove(); });
+  ticks.forEach((t) => { const tx = mk('text', {x: 0, y: 0}); tx.textContent = fmt(t); ml = Math.max(ml, tx.getComputedTextLength()); tx.remove(); });
   ml += 10;
   ticks.forEach((t) => {
     mk('line', {x1: ml, x2: W - 4, y1: y(t), y2: y(t), stroke: 'currentColor', 'stroke-opacity': 0.12});
-    const tx = mk('text', {x: ml - 6, y: y(t), dy: '0.32em', 'text-anchor': 'end'}); tx.textContent = fmtT(t);
+    const tx = mk('text', {x: ml - 6, y: y(t), dy: '0.32em', 'text-anchor': 'end'}); tx.textContent = fmt(t);
   });
+  mk('line', {x1: ml, x2: W - 4, y1: y(0), y2: y(0), stroke: 'currentColor', 'stroke-opacity': 0.35});
+  return {y, ml};
+}
+function tipAt(box, tip, ev, topY) {
+  const bx = box.getBoundingClientRect(), tw = tip.offsetWidth;
+  tip.style.left = Math.min(Math.max(0, ev.clientX - bx.left - tw / 2), box.clientWidth - tw) + 'px';
+  tip.style.top = Math.max(0, topY - 60) + 'px';
+}
+
+function chartBq(rows) {
+  const box = document.getElementById('chart'), H = 240, mb = 26, mt = 18;
+  const {W, mk} = svgIn(box, H);
+  const cs = getComputedStyle(document.documentElement);
+  const {y, ml} = yAxis(mk, W, H, mt, mb, Math.max(...rows.map((r) => r.bq)), (v) => nf({maximumFractionDigits: 1}).format(v / 1e9));
   const band = (W - 4 - ml) / rows.length, bw = Math.min(40, band * 0.6);
   const tip = el('div', {className: 'tip', hidden: true}); box.append(tip);
-  const cs = getComputedStyle(document.documentElement);
   rows.forEach((r, i) => {
     const x = ml + band * i + (band - bw) / 2;
     const rect = mk('rect', {x, width: bw, y: y(r.bq), height: Math.max(0, y(0) - y(r.bq)), rx: 4});
     rect.style.fill = r.dang_chay ? cs.getPropertyValue('--bar') : cs.getPropertyValue('--accent');
     const lb = mk('text', {x: x + bw / 2, y: H - 8, 'text-anchor': 'middle'}); lb.textContent = 'T' + r.m + '/' + String(r.y).slice(2);
-    const vl = mk('text', {x: x + bw / 2, y: y(r.bq) - 6, 'text-anchor': 'middle'}); vl.textContent = fmtT(r.bq); vl.style.fill = cs.getPropertyValue('--fg');
+    const vl = mk('text', {x: x + bw / 2, y: y(r.bq) - 6, 'text-anchor': 'middle'}); vl.textContent = nf({maximumFractionDigits: 2}).format(r.bq / 1e9); vl.style.fill = cs.getPropertyValue('--fg');
     const show = (ev) => {
-      tip.replaceChildren(el('div', {className: 'muted', textContent: 'Tháng ' + r.thang + (r.dang_chay ? ` (đang chạy, ${r.so_ngay} ngày)` : '')}), el('div', {textContent: `${F.ty(r.bq)}/ngày · tổng ${F.ty(r.gia_tri)} · ${F.n(r.so_don)} đơn`}));
-      tip.hidden = false;
-      const bx = box.getBoundingClientRect(), tw = tip.offsetWidth;
-      const px = (ev.clientX ?? bx.left + x) - bx.left;
-      tip.style.left = Math.min(Math.max(0, px - tw / 2), box.clientWidth - tw) + 'px';
-      tip.style.top = Math.max(0, (y(r.bq) / H) * box.clientHeight - 56) + 'px';
+      tip.replaceChildren(el('div', {className: 'muted', textContent: 'Tháng ' + r.thang + (r.dang_chay ? ` (đang chạy, ${r.so_ngay} ngày)` : '')}), el('div', {textContent: `${F.ty2(r.bq)}/ngày · tổng ${F.ty(r.gia_tri)} · ${F.n(r.so_don)} đơn`}));
+      tip.hidden = false; tipAt(box, tip, ev, (y(r.bq) / H) * box.clientHeight);
     };
     rect.addEventListener('pointerenter', show); rect.addEventListener('pointermove', show);
     rect.addEventListener('pointerleave', () => { tip.hidden = true; });
   });
-  mk('line', {x1: ml, x2: W - 4, y1: y(0), y2: y(0), stroke: 'currentColor', 'stroke-opacity': 0.35});
 }
 
-const STATUS = {THIEU_NVL: 'Thiếu NVL', SAN_SANG_VAT_TU: 'Sẵn sàng vật tư', DA_DU_NVL: 'Đã đủ NVL'};
-const STAGE = {IQC: 'Kiểm NVL đầu vào (IQC)', OQC: 'Kiểm thành phẩm (OQC)', KIEM_VAT_TU: 'Kiểm vật tư đóng gói', QUYET_TOAN: 'Quyết toán lệnh'};
+function chartND(rows) {
+  const box = document.getElementById('chart-nd'), H = 260, mb = 42, mt = 10;
+  const {W, mk} = svgIn(box, H);
+  const cs = getComputedStyle(document.documentElement);
+  const {y, ml} = yAxis(mk, W, H, mt, mb, Math.max(...rows.map((r) => Math.max(r.nhan, r.dong)), 1), (v) => F.n(v));
+  const band = (W - 4 - ml) / rows.length, bw = Math.min(26, band * 0.34);
+  const tip = el('div', {className: 'tip', hidden: true}); box.append(tip);
+  const narrow = band < 70;
+  rows.forEach((r, i) => {
+    const cx = ml + band * i + band / 2;
+    const low = r.dong > 0 && r.dong < 0.35 * Math.max(1, r.nhan);
+    const g = mk('g', {});
+    const a = mk('rect', {x: cx - bw - 1, width: bw, y: y(r.nhan), height: Math.max(0, y(0) - y(r.nhan)), rx: 3}, g);
+    a.style.fill = cs.getPropertyValue('--nhan');
+    const b = mk('rect', {x: cx + 1, width: bw, y: y(r.dong), height: Math.max(0, y(0) - y(r.dong)), rx: 3}, g);
+    b.style.fill = low ? cs.getPropertyValue('--bad') : cs.getPropertyValue('--dong');
+    const hit = mk('rect', {x: cx - band / 2, width: band, y: mt, height: H - mb - mt, fill: 'transparent'}, g);
+    const l1 = mk('text', {x: cx, y: H - 24, 'text-anchor': 'middle'}); l1.textContent = thu(r.d) + ' ' + F.dm(r.d);
+    if (low) l1.style.fill = cs.getPropertyValue('--bad');
+    if (!narrow) { const l2 = mk('text', {x: cx, y: H - 8, 'text-anchor': 'middle'}); l2.textContent = F.n(r.nhan) + ' / ' + F.n(r.dong); }
+    const show = (ev) => {
+      tip.replaceChildren(el('div', {className: 'muted', textContent: thu(r.d) + ', ' + F.d(r.d)}), el('div', {textContent: `Nhận ${F.n(r.nhan)} · đóng ${F.n(r.dong)} thùng`}), el('div', {className: 'muted', textContent: r.nhan ? 'Đóng/nhận ' + F.pct(r.dong / r.nhan) : 'Không có đơn'}));
+      tip.hidden = false; tipAt(box, tip, ev, (y(Math.max(r.nhan, r.dong)) / H) * box.clientHeight);
+    };
+    hit.addEventListener('pointerenter', show); hit.addEventListener('pointermove', show);
+    hit.addEventListener('pointerleave', () => { tip.hidden = true; });
+  });
+}
+
+function kv(id, rows) {
+  const tb = document.getElementById(id); tb.replaceChildren();
+  rows.forEach(([k, v, cls]) => { const tr = tb.insertRow(); tr.insertCell().textContent = k; const td = tr.insertCell(); td.className = 'num ' + (cls || ''); td.textContent = v; });
+}
 
 function render(D) {
-  const C = compute(D);
+  const C = compute(D), H = C.H, T = H.ton;
   const b = (t, cls) => el('b', {textContent: t, className: cls || ''});
+  const li = (...k) => el('li', {}, ...k);
   const tone = (v) => (v > 0 ? 'ok' : v < 0 ? 'bad' : '');
-  document.getElementById('take').replaceChildren(
-    'Số liệu từ ', b(F.d(C.tu)), ', khi HALO ONE bắt đầu áp dụng, đến ', b(F.d(C.den)), '. ',
-    ...(C.prev ? ['Tháng ', b(C.prev.thang), ' tiếp nhận ', b(F.ty(C.prev.gia_tri)), ' đơn hàng. '] : []),
-    'Tháng này đạt ', b(F.ty(C.cur.bq)), ' mỗi ngày',
-    ...(C.run != null ? [', ', b(F.dpct(C.run), tone(C.run)), ' so với bình quân ngày tháng trước'] : []),
-    '. Điểm nghẽn ở khâu cung ứng: ', b(F.pct(C.lenhThieu / C.lenhTong)), ' lệnh sang chai đang mở bị thiếu NVL, ',
-    b(F.pct(C.giaoQH / C.giaoTong)), ' dòng đơn chưa giao đã quá hạn hẹn.');
-  document.getElementById('stamp').textContent = 'Cập nhật từ HALO ONE lúc ' + C.at;
-  const kpi = (label, val, sub, cls) => el('div', {className: 'kpi'}, el('span', {className: 'cap', textContent: label}), el('span', {className: 'v ' + (cls || ''), textContent: val}), el('span', {className: 'cap'}, ...sub));
+  document.getElementById('stamp').textContent = `Số liệu từ ${F.d(C.tu)} đến ${F.d(C.den)} · cập nhật từ HALO ONE lúc ${C.at}`;
+  document.getElementById('brief').replaceChildren(
+    li(b('Nhận vào nhiều hơn làm ra: '), `bình quân ${H.so_ngay_tb} ngày có phiếu nhận `, b(F.n(H.tb_nhan) + ' thùng/ngày'), ', đóng ', b(F.n(H.tb_dong)), ` (${F.pct(C.tyLeDong)}). Tồn đọng tăng khoảng `, b(F.n(C.gap) + ' thùng mỗi ngày', 'bad'), '.'),
+    li(b(`Tồn đọng ${F.n(H.ton_tong)} thùng, khoảng ${F.n1(H.ton_tong / C.tbD)} ngày sản xuất. `), b(F.pct(T.THIEU_NVL.thung / H.ton_tong), 'bad'), ' đang thiếu NVL; phần đã có vật tư đủ chạy khoảng ', b(F.n1(C.ready / C.tbD) + ' ngày'), '.'),
+    li(b(`${C.heavy.length} sản phẩm gốc thiếu NVL nặng chiếm ${F.pct(C.heavyThung / H.ton_tong)} tồn đọng: `), C.heavy.map((x) => x.ten).join(', '), '.'),
+    li('Đơn tháng này ', b(F.ty2(C.cur.bq) + '/ngày'), ...(C.run != null ? [', ', b(F.dpct(C.run), tone(C.run)), ' so với bình quân tháng trước'] : []), `. Hôm nay ${H.don_hn} đơn, `, b(`${H.gia0_hn} đơn giá trị 0`, H.gia0_hn ? 'bad' : ''), '.'));
+  const kpi = (label, val, sub, cls, alert) => el('div', {className: 'kpi' + (alert ? ' alert' : '')}, el('span', {className: 'cap', textContent: label}), el('span', {className: 'v ' + (cls || ''), textContent: val}), el('span', {className: 'cap'}, ...sub));
   document.getElementById('kpis').replaceChildren(
-    ...(C.prev ? [kpi('Đơn tiếp nhận tháng ' + C.prev.thang, F.ty(C.prev.gia_tri), [F.n(C.prev.so_don) + ' đơn · ' + F.n(C.prev.so_khach) + ' khách'])] : []),
-    kpi(`Tháng ${C.cur.thang}, sau ${C.cur.so_ngay} ngày`, F.ty(C.cur.gia_tri), [F.n(C.cur.so_don) + ' đơn, chưa trọn tháng']),
-    kpi('Bình quân mỗi ngày, tháng này', F.ty(C.cur.bq), C.run != null ? [el('span', {className: tone(C.run), textContent: F.dpct(C.run)}), ' so với ' + F.ty(C.prev.bq) + '/ngày tháng trước'] : ['']),
-    kpi('Dòng đơn quá hạn giao', F.pct(C.giaoQH / C.giaoTong), [F.n(C.giaoQH) + ' trên ' + F.n(C.giaoTong) + ' dòng chưa giao'], C.giaoQH / C.giaoTong > 0.2 ? 'bad' : ''),
-    kpi('Lệnh sang chai thiếu NVL', F.n(C.lenhThieu), ['trên ' + F.n(C.lenhTong) + ' lệnh mở · ' + F.n(C.lenhQH) + ' lệnh quá hạn'], C.lenhThieu > 0 ? 'bad' : ''),
-    kpi('Mã tồn kho âm', F.n(C.maAm), ['trên ' + F.n(C.maTon) + ' mã còn tồn'], C.maAm > 0 ? 'bad' : ''));
-  document.getElementById('tap-trung').textContent = `Top 5 chiếm ${F.pct(C.top5)}, top 20 chiếm ${F.pct(C.top20)} giá trị đơn.`;
-  table('tb-khach', C.khach, [{f: 'ten'}, {f: 'so_don', fmt: 'n'}, {f: 'gia_tri', fmt: 'ty', bar: true}], {skip: (r) => r.ten.startsWith('Khác')});
-  table('tb-ncc', C.ncc, [{f: 'ten'}, {f: 'so_don', fmt: 'n'}, {f: 'gia_tri', fmt: 'ty', bar: true}], {skip: (r) => r.ten.startsWith('Khác')});
-  table('tb-giao', C.giao, [{f: 'han_giao'}, {f: 'so_dong', fmt: 'n', bar: true, crit: (r) => r.han_giao === 'Quá hạn'}, {f: 'sl_con_lai', fmt: 'n'}]);
-  table('tb-lenh', C.lenh, [{f: 'trang_thai', label: (v) => STATUS[v] || v}, {f: 'so_lenh', fmt: 'n', bar: true, crit: (r) => r.trang_thai === 'THIEU_NVL'}, {f: 'sl_con_lai', fmt: 'n'}, {f: 'qua_han', fmt: 'n'}]);
+    kpi('Nhận vào hôm nay', F.n(H.nhan_hn) + ' thùng', [`${H.don_hn} đơn · ${F.ty2(H.gt_hn)}`]),
+    kpi('Đóng thùng hôm nay', F.n(H.dong_hn) + ' thùng', [`${H.phieu_hn} phiếu · chênh ${F.n(H.nhan_hn - H.dong_hn)}`]),
+    kpi('Tồn đọng chờ sản xuất', F.n(H.ton_tong) + ' thùng', [`khoảng ${F.n1(H.ton_tong / C.tbD)} ngày · ${F.n(H.lenh_tong)} lệnh`], 'bad', true),
+    kpi('Lệnh quá hạn hẹn', F.n(H.qua_han_lenh) + ' lệnh', [`${F.pct(H.qua_han_lenh / H.lenh_tong)} lệnh đang mở`], 'bad', true),
+    kpi(`Đơn tháng ${C.cur.thang}, ${C.cur.so_ngay} ngày`, F.ty(C.cur.gia_tri), C.run != null ? [`${F.ty2(C.cur.bq)}/ngày · `, el('span', {className: tone(C.run), textContent: F.dpct(C.run)}), ' so với tháng trước'] : [F.ty2(C.cur.bq) + '/ngày']),
+    kpi('Dòng đơn quá hạn giao', F.pct(C.giaoQH / C.giaoTong), [`${F.n(C.giaoQH)} trên ${F.n(C.giaoTong)} dòng chưa giao`], 'bad', true));
+
+  const ngay = H.ngay;
+  const dec = (title, body, meta) => el('div', {className: 'dec'}, el('b', {textContent: title}), el('p', {textContent: body}), el('div', {className: 'meta', textContent: meta}));
+  document.getElementById('decs').replaceChildren(
+    dec(`1. Dồn lực NVL cho ${C.heavy.length} sản phẩm thiếu nặng`, `${C.heavy.map((x) => x.ten).join(', ')}. Đặt ngay dòng NVL thiếu chưa có đơn mua; làm việc với ${H.chua_ve_tre.soNcc} NCC đang trễ hẹn (${F.ty2(H.chua_ve_tre.giaTri)}).`, `Phụ trách: Thu mua + Kế hoạch · Hạn đề xuất: ${F.d(addDays(ngay, 3))} · Mở khóa khoảng ${F.n(C.heavyThung)} thùng`),
+    dec(`2. Xếp chuyền ${F.n(C.readyLenh)} lệnh đã có vật tư`, `Khoảng ${F.n(C.ready)} thùng, tương đương ${F.n1(C.ready / C.tbD)} ngày sản xuất, đang chờ chạy. Xếp theo hạn giao; kiểm vật tư dùng chung trước khi chốt lịch.`, `Phụ trách: GĐ Sản xuất + Kế hoạch · Hạn đề xuất: ${F.d(addDays(ngay, 2))}`),
+    dec(`3. Đối chiếu giá ${H.gia0_hn} đơn giá trị 0 hôm nay`, `${H.gia0_hn}/${H.don_hn} đơn tiếp nhận hôm nay chưa có giá. Doanh số và công nợ đang bị ghi thiếu cho tới khi bổ sung.`, `Phụ trách: Kinh doanh (Phó TGĐ KD duyệt giá) · Hạn đề xuất: ${F.d(addDays(ngay, 1))}`));
+
+  chartND(H.ngay7);
+  const s7n = sum(H.ngay7, (x) => x.nhan), s7d = sum(H.ngay7, (x) => x.dong);
+  document.getElementById('nd-note').textContent = `7 ngày: nhận ${F.n(s7n)}, đóng ${F.n(s7d)} thùng (đóng/nhận ${F.pct(s7d / s7n)}). Bình quân ${H.so_ngay_tb} ngày có phiếu: nhận ${F.n(H.tb_nhan)}, đóng ${F.n(H.tb_dong)}, chênh ${F.n(C.gap)} thùng/ngày. BTP và NL bán rời không đóng thùng: ${F.n(H.bulk)} kg/lít.`;
+  const tonRows = ['THIEU_NVL', 'SAN_SANG_VAT_TU', 'DA_DU_NVL'].map((k) => ({tt: k, lenh: T[k].lenh, thung: T[k].thung, ngay: T[k].thung / C.tbD}));
+  table('tb-ton', tonRows, [{f: 'tt', label: (v) => STATUS[v], cls: (r) => (r.tt === 'THIEU_NVL' ? 'bad' : '')}, {f: 'lenh', fmt: 'n'}, {f: 'thung', fmt: 'n', bar: true, crit: (r) => r.tt === 'THIEU_NVL', amb: (r) => r.tt === 'SAN_SANG_VAT_TU'}, {f: 'ngay', fmt: 'n1'}],
+    {total: ['Tổng', F.n(H.lenh_tong), F.n(H.ton_tong), F.n1(H.ton_tong / C.tbD)]});
+  const need = H.tb_dong ? H.tb_nhan / H.tb_dong - 1 : 0;
+  document.getElementById('ton-call').textContent = `Để tồn đọng không tăng, sản lượng cần khoảng ${F.n(H.tb_nhan)} thùng/ngày (${F.dpct(need)} so với hiện tại). Tăng ca chỉ xử lý được khoảng ${F.n(C.ready)} thùng đã có vật tư; ưu tiên giải phóng NVL trước.`;
+  table('tb-goc', H.top_goc, [{f: 'ten'}, {f: 'lenh', fmt: 'n'}, {f: 'thung', fmt: 'n'}, {f: 'pthieu', fmt: 'pct', cls: (r) => (r.pthieu >= 0.75 ? 'bad' : 'warn')}],
+    {total: ['Top 10 / tổng', '', `${F.n(sum(H.top_goc, (x) => x.thung))} / ${F.n(H.ton_tong)}`, F.pct(sum(H.top_goc, (x) => x.thung) / H.ton_tong)]});
   table('tb-sx', C.sx, [{f: 'thang'}, {f: 'sl_pha_che', fmt: 'n'}, {f: 'phieu_pc', fmt: 'n'}, {f: 'sl_sang_chai', fmt: 'n'}, {f: 'phieu_sc', fmt: 'n'}]);
   table('tb-sla', C.sla, [{f: 'cong_doan', label: (v) => STAGE[v] || v}, {f: 'tre', fmt: 'n'}, {f: 'trong_han', fmt: 'n'}, {f: 'dang_cho', fmt: 'n'}]);
-  table('tb-kho', C.kho, [{f: 'nhom'}, {f: 'so_ma_ton', fmt: 'n'}, {f: 'so_ma_am', fmt: 'n'}]);
-  chart(C.thang);
-  let t; window.addEventListener('resize', () => { clearTimeout(t); t = setTimeout(() => chart(C.thang), 150); });
+
+  kv('tb-nvl', [
+    ['Dòng NVL thiếu / tổng nhu cầu', `${F.n(H.nvl.soDongThieu)} / ${F.n(H.nvl.soDong)}`, 'bad'],
+    ['Hàng mua chưa về', `${F.n(H.chua_ve.soDong)} dòng · ${F.ty2(H.chua_ve.giaTri)} · ${H.chua_ve.soNcc} NCC`],
+    ['NCC trễ hẹn', `${F.n(H.chua_ve_tre.soDong)} dòng · ${F.ty2(H.chua_ve_tre.giaTri)} · ${H.chua_ve_tre.soNcc} NCC`, 'bad'],
+    ['Thiếu nhưng chưa đặt (ước tính)', C.thieuChuaDat != null ? `khoảng ${F.n(C.thieuChuaDat)} dòng` : 'chưa có số', 'bad'],
+    ['Mã vật tư tồn âm', F.n(H.ma_am), 'warn']]);
+  table('tb-ncc', C.ncc, [{f: 'ten'}, {f: 'so_don', fmt: 'n'}, {f: 'gia_tri', fmt: 'ty', bar: true}], {skip: (r) => r.ten.startsWith('Khác')});
+
+  chartBq(C.thang);
+  document.getElementById('hn-cap').textContent = `Ngày ${F.d(ngay)}: ${H.don_hn} đơn, ${H.so_khach_hn} khách, ${F.ty2(H.gt_hn)}. ${H.gia0_hn} đơn có giá 0 nên giá trị thực cao hơn.`;
+  table('tb-khhn', H.khach_hn, [{f: 'ten'}, {f: 'so_don', fmt: 'n'}, {f: 'gia_tri', fmt: 'tr'}]);
+  table('tb-sphn', H.sp_hn, [{f: 'ten'}, {f: 'thung', fmt: 'n1'}]);
+  document.getElementById('tap-trung').textContent = `Top 5 chiếm ${F.pct(C.top5)}, top 20 chiếm ${F.pct(C.top20)} giá trị đơn.`;
+  table('tb-khach', C.khach, [{f: 'ten'}, {f: 'so_don', fmt: 'n'}, {f: 'gia_tri', fmt: 'ty', bar: true}], {skip: (r) => r.ten.startsWith('Khác')});
+
+  table('tb-giao', C.giao, [{f: 'han_giao'}, {f: 'so_dong', fmt: 'n', bar: true, crit: (r) => r.han_giao === 'Quá hạn', amb: (r) => r.han_giao === '≤ 3 ngày'}, {f: 'sl_con_lai', fmt: 'n'}]);
+  kv('tb-hua', [
+    ['NVL có sẵn', `từ ${C.huaNgay} ngày làm việc`],
+    ['Thiếu NVL mua trong nước', `ngày NCC giao + ${C.huaNgay} ngày`],
+    ['NVL nhập khẩu', 'chỉ hứa khi Thu mua xác nhận ngày về', 'warn'],
+    ['Hàng đã có vật tư đang chờ chạy', `${F.n(C.ready)} thùng · ${F.n1(C.ready / C.tbD)} ngày`]]);
+  table('tb-kho', C.kho, [{f: 'nhom'}, {f: 'so_ma_ton', fmt: 'n'}, {f: 'so_ma_am', fmt: 'n', cls: (r) => (r.so_ma_am > 0 ? 'bad' : '')}]);
+
+  let t; window.addEventListener('resize', () => { clearTimeout(t); t = setTimeout(() => { chartBq(C.thang); chartND(H.ngay7); }, 150); });
 }
 
 const KEY = 'hl-dash-pw';
 async function unlock(pw, quiet) {
   const err = document.getElementById('err'), go = document.getElementById('go');
   go.disabled = true; err.textContent = '';
-  try {
-    const D = await decrypt(pw);
-    try { sessionStorage.setItem(KEY, pw); } catch (e) {}
-    document.getElementById('gate').hidden = true;
-    document.getElementById('app').hidden = false;
-    render(D);
-  } catch (e) {
+  let D;
+  try { D = await decrypt(pw); } catch (e) {
     if (!quiet) err.textContent = 'Mật khẩu không đúng. Kiểm tra lại chữ hoa, chữ thường.';
     try { sessionStorage.removeItem(KEY); } catch (e2) {}
-  } finally { go.disabled = false; }
+    go.disabled = false; return;
+  }
+  try { sessionStorage.setItem(KEY, pw); } catch (e) {}
+  document.getElementById('gate').hidden = true;
+  document.getElementById('app').hidden = false;
+  go.disabled = false;
+  render(D);
 }
 document.getElementById('gate-form').addEventListener('submit', (e) => { e.preventDefault(); unlock(document.getElementById('pw').value); });
 document.getElementById('out').addEventListener('click', () => { try { sessionStorage.removeItem(KEY); } catch (e) {} location.reload(); });
